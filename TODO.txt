@@ -1,0 +1,4 @@
+- Guardare appunti teoria e sul libro + su internet
+- Implementazione GMRES
+- Calcolare autovalori
+- https://github.com/pygbe/pygbe/blob/master/pygbe/gmres.py
