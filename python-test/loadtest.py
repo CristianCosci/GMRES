@@ -37,6 +37,7 @@ res, info = gmres(A, b, x0=x0, tol=1e-05, restart=None)
 
 print(res)
 print(info)
+
 # print(A)
 # print(b)
 
