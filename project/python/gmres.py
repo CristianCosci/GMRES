@@ -4,8 +4,11 @@ import numpy as np
 
 from scipy.linalg import lstsq
 from scipy.linalg import norm
+from scipy import sparse
 from scipy.sparse.linalg import gmres
 from scipy.optimize import least_squares
+from scipy.optimize import nnls
+from scipy.sparse.linalg import spsolve
 
 
 def generate_data(dim:int, den:float, seed=911, randx0=False) -> Tuple[np.ndarray, np.array, np.array]:
@@ -28,13 +31,12 @@ def generate_data(dim:int, den:float, seed=911, randx0=False) -> Tuple[np.ndarra
     return A, b, x0
 
 
-def gmres_scipy(A, b, x0, tollerance=1e-5, max_iter=10):
+def gmres_scipy(A, b, x0, tollerance=1e-10, max_iter=10):
     """"
     Invoca la funzione GMRES di SciPy con i dati passati
     """
 
     return gmres(A,b, x0=x0, tol=tollerance, maxiter=max_iter)
-
 
 
 def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
@@ -46,10 +48,10 @@ def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
     y = 0
 
     for j in range(max_iter-1):
+        print("Arrivo j: ", j)
         # ARNOLDI
         Q[:, j+1] = A.dot(Q[:, j])
         for i in range(j):
-            #  ???
             H[i, j] = Q[:, i].transpose().dot(Q[:, j+1])
             Q[:, j+1] = Q[:, j+1] - H[i,j] * (Q[:,i])   # TODO: forse più efficiente
         
@@ -57,26 +59,24 @@ def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
 
         
         if abs(H[j+1, j]) > tollerance:
+            print('stop uno')
             Q[:, j+1] = Q[:, j+1] / H[j+1, j]
 
-        e1 = np.zeros((j+2,1))
+        e1 = np.zeros(j+2)
         e1[0] = 1
-        # e1 = e1.transpose()
-        
-        # print(e1)
-        # print(H[:j+2, :j+1])
-        # print(H[:j+2, :j+1].shape)
-        # print((beta * e1).shape)
-        #y = least_squares(lambda x: H[:j+2, :j+1].dot(x) - e1.dot(beta), ).x
-        print("H: \n", H[:j+2, :j+1])
-        print("B: \n", beta * e1)
-        y = lstsq(H[:j+2, :j+1],  beta * e1)[0]
-        # y = lstsq(H,  beta * e1)[0]
+        e1 = e1.transpose()
 
-        #print('Y DIO MAIALE ', y)
+        #y = least_squares(lambda x: H[:j+2, :j+1].dot(x) - e1.dot(beta), ).x
+        # print("H: \n", H[:j+2, :j+1])
+        # print("B: \n", beta * e1)
+        #y = lstsq(H[:j+2, :j+1],  beta * e1)[0]
+        y = nnls(H[:j+2, :j+1],  beta * e1)[0]
+
         # y = lstsq(H[:j+2, :j+1] , e1.dot(beta)) # TODO: io ci spero
         res = norm(H[:j+2, :j+1].dot(y) - e1.dot(beta), 2)
+        
         if res < tollerance:
+            print('stop due')
             return Q[:, :j+1].dot(y)+x0, res
 
     return Q[:, :j+1].dot(y)+x0, res
@@ -84,27 +84,30 @@ def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
 
 def main():
 
-    #print("------------------------\n")
     # Generate Data
-    A, b, x0 = generate_data(3, 0.5, randx0=False) # TODO: provare con `randx0=True`
-    
+    #A, b, x0 = generate_data(3, 0.5, randx0=False) # TODO: provare con `randx0=True`
+    A = np.array([[3, 2, -1],
+                    [2, -2, 4],
+                    [-1, 0.5, -1]], dtype=np.float64)
+
+    b = np.array([1, -2, 0], dtype=np.float64)
+    x0 = np.zeros(b.shape, dtype=np.float64)
+
+    A = sparse.csr_matrix(A)
+    #b = sparse.csr_matrix(b)
+
     # Call gmres scipy
-    res_scipy, info = gmres_scipy(A, b, x0)
-
-    # print(res)
-    # print(info)
-
-
-    #print("-----------------------\n")
+    res_scipy, info = gmres_scipy(A, b, x0, max_iter=50)
+    print('res_scipy ', res_scipy)
 
     # Call gmres porco dio
-    x, res = gmres_pd(A, b, x0)
+    x, res = gmres_pd(A, b, x0, max_iter=100)
+    print('x gmres nostro ', x)
 
-    print(np.min(res - res_scipy))
-    print(np.max(res - res_scipy))
-    #print(x)
-    #print(res)
-    # Compare the two GMRES 
+    # Solve
+    x_solve = spsolve(A, b)
+    print('x solve ', x_solve)
+
 
 
 if __name__ == "__main__":
