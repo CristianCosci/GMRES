@@ -39,27 +39,26 @@ def gmres_scipy(A, b, x0, tollerance=1e-10, max_iter=10):
     return gmres(A,b, x0=x0, tol=tollerance, maxiter=max_iter)
 
 
-def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
-    Q = np.zeros((b.shape[0], max_iter + 1), dtype=np.float64) #zeros o ones?
-    H = np.zeros((max_iter+1, max_iter), dtype=np.float64) #Perchè ha questa dimensione?
+def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
+    Q = np.ones((b.shape[0], max_iter + 1), dtype=type) #zeros o ones?
+    H = np.zeros((max_iter+1, max_iter), dtype=type) #Perchè ha questa dimensione?
     r0 = b - A.dot(x0)
     beta = norm(r0, 2)
     Q[:, 0] = r0 / beta
     y = 0
 
     for j in range(max_iter-1):
-        print("Arrivo j: ", j)
+        #print("Arrivo j: ", j)
         # ARNOLDI
         Q[:, j+1] = A.dot(Q[:, j])
         for i in range(j):
             H[i, j] = Q[:, i].transpose().dot(Q[:, j+1])
-            Q[:, j+1] = Q[:, j+1] - H[i,j] * (Q[:,i])   # TODO: forse più efficiente
+            Q[:, j+1] = Q[:, j+1] - Q[:,i].dot(H[i,j])   # TODO: forse più efficiente
         
         H[j+1, j] = norm(Q[:, j+1], 2)
 
         
         if abs(H[j+1, j]) > tollerance:
-            print('stop uno')
             Q[:, j+1] = Q[:, j+1] / H[j+1, j]
 
         e1 = np.zeros(j+2)
@@ -69,8 +68,8 @@ def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
         #y = least_squares(lambda x: H[:j+2, :j+1].dot(x) - e1.dot(beta), ).x
         # print("H: \n", H[:j+2, :j+1])
         # print("B: \n", beta * e1)
-        #y = lstsq(H[:j+2, :j+1],  beta * e1)[0]
-        y = nnls(H[:j+2, :j+1],  beta * e1)[0]
+        y = lstsq(H[:j+2, :j+1],  e1.dot(beta))[0]
+        # y = nnls(H[:j+2, :j+1],  beta * e1)[0]
 
         # y = lstsq(H[:j+2, :j+1] , e1.dot(beta)) # TODO: io ci spero
         res = norm(H[:j+2, :j+1].dot(y) - e1.dot(beta), 2)
@@ -85,13 +84,13 @@ def gmres_pd(A, b, x0, tollerance=1e-5, max_iter=10):
 def main():
 
     # Generate Data
-    #A, b, x0 = generate_data(3, 0.5, randx0=False) # TODO: provare con `randx0=True`
-    A = np.array([[3, 2, -1],
-                    [2, -2, 4],
-                    [-1, 0.5, -1]], dtype=np.float64)
+    A, b, x0 = generate_data(10, 0.5, randx0=False) # TODO: provare con `randx0=True`
+    # A = np.array([[3, 2, -1],
+    #                 [2, -2, 4],
+    #                 [-1, 0.5, -1]], dtype=np.float64)
 
-    b = np.array([1, -2, 0], dtype=np.float64)
-    x0 = np.zeros(b.shape, dtype=np.float64)
+    # b = np.array([1, -2, 0], dtype=np.float64)
+    # x0 = np.zeros(b.shape, dtype=np.float64)
 
     A = sparse.csr_matrix(A)
     #b = sparse.csr_matrix(b)
@@ -101,7 +100,7 @@ def main():
     print('res_scipy ', res_scipy)
 
     # Call gmres porco dio
-    x, res = gmres_pd(A, b, x0, max_iter=100)
+    x, res = gmres_pd(A, b, x0, tollerance=1e-10 ,max_iter=50, type=np.float64)
     print('x gmres nostro ', x)
 
     # Solve
