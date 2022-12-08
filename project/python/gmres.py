@@ -6,24 +6,24 @@ from scipy.linalg import lstsq
 from scipy.linalg import norm
 from scipy import sparse
 from scipy.sparse.linalg import gmres
-from scipy.optimize import least_squares
-from scipy.optimize import nnls
 from scipy.sparse.linalg import spsolve
 
 import matplotlib.pyplot as plt
 
 
 def generate_data(dim:int, den:float, seed=911, randx0=False) -> Tuple[np.ndarray, np.array, np.array]:
-    """
-    
-    Genera i dati iniziali per il avviare GMRES
-    
-    """
-    
+    '''
+    Generate initial data.
+
+        returns:
+            - matrix A
+            - vector b
+            - initial guess x0 (random or zeros)
+    '''
     np.random.seed(seed)
     
     A = sparse.random(dim, dim, density=den , format="csr", dtype=np.float32)
-    A = A.transpose().dot(A)
+    #A = A.transpose().dot(A) # ? wtf?
     b = np.random.random(dim)
 
     if randx0:
@@ -35,11 +35,12 @@ def generate_data(dim:int, den:float, seed=911, randx0=False) -> Tuple[np.ndarra
 
 
 def gmres_scipy(A, b, x0, tollerance=1e-10, max_iter=10):
-    """"
-    Invoca la funzione GMRES di SciPy con i dati passati
-    """
+    '''
+    Gmres scipy call.
+    '''
 
     return gmres(A,b, x0=x0, tol=tollerance, maxiter=max_iter)
+
 
 def customNorm(res):
     for i in range(1, len(res)):
@@ -47,10 +48,12 @@ def customNorm(res):
     
     return res
 
-def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
+
+
+def gmres_pd(A, b, x0, tolerance=1e-10, max_iter=10, type = np.float64):
     res = []
     Q = np.ones((b.shape[0], max_iter + 1), dtype=type) #zeros o ones?
-    H = np.zeros((max_iter+1, max_iter), dtype=type) #Perchè ha questa dimensione?
+    H = np.zeros((max_iter+1, max_iter), dtype=type)
     v = np.zeros((1, 1), dtype=type)
     r0 = b - A.dot(x0)
     beta = norm(r0, 2)
@@ -61,7 +64,7 @@ def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
         #print("Arrivo j: ", j)
         # ARNOLDI
         Q[:, j+1] = A.dot(Q[:, j])
-        for h in range(5):
+        for h in range(5): # WTF IS THIS? (come funziona l'ortogonalizzazione?)
             for i in range(j):
                 v = Q[:, i].transpose().dot(Q[:, j+1])
                 Q[:, j+1] = Q[:, j+1] - Q[:,i]*v   # TODO: forse più efficiente
@@ -70,7 +73,7 @@ def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
         H[j+1, j] = norm(Q[:, j+1], 2)
 
         
-        if abs(H[j+1, j]) > tollerance:
+        if abs(H[j+1, j]) > tolerance:
             Q[:, j+1] = Q[:, j+1] / H[j+1, j]
 
         e1 = np.zeros(j+2)
@@ -88,14 +91,12 @@ def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
         # y = lstsq(H[:j+2, :j+1] , e1.dot(beta)) # TODO: io ci spero
         res.append(norm(H[:j+2, :j+1].dot(y) - e1.dot(beta), 2))
         
-        if res[-1] < tollerance:
+        if res[-1] < tolerance:
             print('stop due')
             return Q[:, :j+1].dot(y)+x0, res
 
     return Q[:, :j+1].dot(y)+x0, res
 
-def NormalizeData(data):
-    return (data - np.min(data)) / (np.max(data) - np.min(data))
 
 
 def main():
