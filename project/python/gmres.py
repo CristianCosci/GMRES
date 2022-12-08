@@ -10,6 +10,8 @@ from scipy.optimize import least_squares
 from scipy.optimize import nnls
 from scipy.sparse.linalg import spsolve
 
+import matplotlib.pyplot as plt
+
 
 def generate_data(dim:int, den:float, seed=911, randx0=False) -> Tuple[np.ndarray, np.array, np.array]:
     """
@@ -21,6 +23,7 @@ def generate_data(dim:int, den:float, seed=911, randx0=False) -> Tuple[np.ndarra
     np.random.seed(seed)
     
     A = sparse.random(dim, dim, density=den , format="csr", dtype=np.float32)
+    A = A.transpose().dot(A)
     b = np.random.random(dim)
 
     if randx0:
@@ -38,10 +41,17 @@ def gmres_scipy(A, b, x0, tollerance=1e-10, max_iter=10):
 
     return gmres(A,b, x0=x0, tol=tollerance, maxiter=max_iter)
 
+def customNorm(res):
+    for i in range(1, len(res)):
+        res[i] -= res[i-1]
+    
+    return res
 
 def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
+    res = []
     Q = np.ones((b.shape[0], max_iter + 1), dtype=type) #zeros o ones?
     H = np.zeros((max_iter+1, max_iter), dtype=type) #Perchè ha questa dimensione?
+    v = np.zeros((1, 1), dtype=type)
     r0 = b - A.dot(x0)
     beta = norm(r0, 2)
     Q[:, 0] = r0 / beta
@@ -51,9 +61,11 @@ def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
         #print("Arrivo j: ", j)
         # ARNOLDI
         Q[:, j+1] = A.dot(Q[:, j])
-        for i in range(j):
-            H[i, j] = Q[:, i].transpose().dot(Q[:, j+1])
-            Q[:, j+1] = Q[:, j+1] - Q[:,i].dot(H[i,j])   # TODO: forse più efficiente
+        for h in range(5):
+            for i in range(j):
+                v = Q[:, i].transpose().dot(Q[:, j+1])
+                Q[:, j+1] = Q[:, j+1] - Q[:,i]*v   # TODO: forse più efficiente
+                H[i, j] = H[i, j] + v
         
         H[j+1, j] = norm(Q[:, j+1], 2)
 
@@ -69,22 +81,27 @@ def gmres_pd(A, b, x0, tollerance=1e-10, max_iter=10, type = np.float64):
         # print("H: \n", H[:j+2, :j+1])
         # print("B: \n", beta * e1)
         y = lstsq(H[:j+2, :j+1],  e1.dot(beta))[0]
+        #y = lstsq(H,  e1)[0]
+        
         # y = nnls(H[:j+2, :j+1],  beta * e1)[0]
 
         # y = lstsq(H[:j+2, :j+1] , e1.dot(beta)) # TODO: io ci spero
-        res = norm(H[:j+2, :j+1].dot(y) - e1.dot(beta), 2)
+        res.append(norm(H[:j+2, :j+1].dot(y) - e1.dot(beta), 2))
         
-        if res < tollerance:
+        if res[-1] < tollerance:
             print('stop due')
             return Q[:, :j+1].dot(y)+x0, res
 
     return Q[:, :j+1].dot(y)+x0, res
 
+def NormalizeData(data):
+    return (data - np.min(data)) / (np.max(data) - np.min(data))
+
 
 def main():
 
     # Generate Data
-    A, b, x0 = generate_data(10, 0.5, randx0=False) # TODO: provare con `randx0=True`
+    A, b, x0 = generate_data(20, 0.5, randx0=False, seed=42) # TODO: provare con `randx0=True`
     # A = np.array([[3, 2, -1],
     #                 [2, -2, 4],
     #                 [-1, 0.5, -1]], dtype=np.float64)
@@ -92,22 +109,37 @@ def main():
     # b = np.array([1, -2, 0], dtype=np.float64)
     # x0 = np.zeros(b.shape, dtype=np.float64)
 
-    A = sparse.csr_matrix(A)
+
+    #A = sparse.csr_matrix(A)
     #b = sparse.csr_matrix(b)
 
     # Call gmres scipy
     res_scipy, info = gmres_scipy(A, b, x0, max_iter=50)
-    print('res_scipy ', res_scipy)
+    #print('res_scipy ', res_scipy)
 
-    # Call gmres porco dio
-    x, res = gmres_pd(A, b, x0, tollerance=1e-10 ,max_iter=50, type=np.float64)
-    print('x gmres nostro ', x)
+    # Call gmres
+    x, res = gmres_pd(A, b, x0, tollerance=1e-15 ,max_iter=150, type=np.float64)
+    #print('x gmres nostro ', x)
 
     # Solve
     x_solve = spsolve(A, b)
-    print('x solve ', x_solve)
+    #print('x solve ', x_solve)
 
-
+    #print('nostro vs vero ', np.min(abs(x_solve - x)))
+    print('nostro vs vero ', np.max(abs(x_solve - x))/np.max(abs(x)))
+    print()
+    #print('nostro vs scipy ', np.min(abs(x - res_scipy)))
+    print('nostro vs scipy ', np.max(abs(x - res_scipy))/np.max(abs(res_scipy)))
+    print()
+    #print('scipy vs vero ', np.min(abs(x_solve - res_scipy)))
+    print('scipy vs vero ', np.max(abs(x_solve - res_scipy))/np.max(abs(res_scipy)))
+    
+    fig, ax = plt.subplots()
+    ax.semilogy()
+    ax.plot(res)
+    plt.show()
+    
+    
 
 if __name__ == "__main__":
     main()
