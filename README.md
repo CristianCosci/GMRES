@@ -45,7 +45,7 @@ In numerical linear algebra, a Givens rotation is a rotation in the plane spanne
 A Givens rotation is represented by a matrix of the form
 
 $$
-{\displaystyle G(i,j,\theta )={\begin{bmatrix}1&\cdots &0&\cdots &0&\cdots &0\\\vdots &\ddots &\vdots &&\vdots &&\vdots \\0&\cdots &c&\cdots &-s&\cdots &0\\\vdots &&\vdots &\ddots &\vdots &&\vdots \\0&\cdots &s&\cdots &c&\cdots &0\\\vdots &&\vdots &&\vdots &\ddots &\vdots \\0&\cdots &0&\cdots &0&\cdots &1\end{bmatrix}},}
+{\displaystyle G(i,j,\theta )={\begin{bmatrix}1&\cdots &0&\cdots &0&\cdots &0\\\vdots &\ddots &\vdots &&\vdots &&\vdots \\ 0&\cdots &c&\cdots &-s&\cdots &0\\\vdots &&\vdots &\ddots &\vdots &&\vdots \\ 0&\cdots &s&\cdots &c&\cdots &0\\\vdots &&\vdots &&\vdots &\ddots &\vdots \\ 0&\cdots &0&\cdots &0&\cdots &1\end{bmatrix}},}
 $$
 
 where c = cos θ and s = sin θ appear at the intersections ith and jth rows and columns. That is, for fixed i > j, the non-zero elements of Givens matrix are given by:
