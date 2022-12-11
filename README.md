@@ -194,7 +194,7 @@ $$
 \|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|\Omega _{n}({\tilde  {H}}_{n}y_{n}-\beta e_{1})\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|.
 $$
 
-Denoting the vector $\beta \Omega _{n}e_{1}$ by
+Denoting the vector $\beta \Omega_{n}e_{1}$ by
 
 $$
 {\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}g_{n}\\\gamma _{n}\end{bmatrix}}}
