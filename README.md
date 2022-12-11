@@ -203,7 +203,7 @@ $$
 with $g_n$ ∈ $R_n$ and $γ_n$ ∈ R, this is
 
 $$
-\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}R_{n}\\0\end{bmatrix}}y_{n}-{\begin{bmatrix}g_{n}\\ \gamma_{n} \end{bmatrix}}\right\|.
+\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}R_{n}\\0\end{bmatrix}}y_{n}-{\begin{bmatrix}g_{n}\\\gamma_{n} \end{bmatrix}}\right\|.
 $$
 
 The vector y that minimizes this expression is given by
