@@ -45,7 +45,7 @@ In numerical linear algebra, a Givens rotation is a rotation in the plane spanne
 A Givens rotation is represented by a matrix of the form
 
 $$
-{\displaystyle G(i,j,\theta )={\begin{bmatrix}1&\cdots &0&\cdots &0&\cdots &0\\\vdots &\ddots &\vdots &&\vdots &&\vdots \\ 0&\cdots &c&\cdots &-s&\cdots &0\\\vdots &&\vdots &\ddots &\vdots &&\vdots \\ 0&\cdots &s&\cdots &c&\cdots &0\\\vdots &&\vdots &&\vdots &\ddots &\vdots \\ 0&\cdots &0&\cdots &0&\cdots &1\end{bmatrix}},}
+{\displaystyle G(i,j,\theta )={\begin{bmatrix}1&\cdots &0&\cdots &0&\cdots &0\\\vdots &\ddots &\vdots &&\vdots &&\vdots \\0&\cdots &c&\cdots &-s&\cdots &0\\\vdots &&\vdots &\ddots &\vdots &&\vdots \\0&\cdots &s&\cdots &c&\cdots &0\\\vdots &&\vdots &&\vdots &\ddots &\vdots \\0&\cdots &0&\cdots &0&\cdots &1\end{bmatrix}},}
 $$
 
 where c = cos θ and s = sin θ appear at the intersections ith and jth rows and columns. That is, for fixed i > j, the non-zero elements of Givens matrix are given by:
@@ -197,13 +197,13 @@ $$
 Denoting the vector $\beta \Omega_{n}e_{1}$ by
 
 $$
-{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}g_{n}\\ \gamma_{n}\end{bmatrix}}}
+{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}g_{n}\\\gamma _{n}\end{bmatrix}}}
 $$
 
 with $g_n$ ∈ $R_n$ and $γ_n$ ∈ R, this is
 
 $$
-\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}R_{n}\\ 0\end{bmatrix}}y_{n}-{\begin{bmatrix}g_{n}\\ \gamma_{n} \end{bmatrix}}\right\|.
+\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}R_{n}\\0\end{bmatrix}}y_{n}-{\begin{bmatrix}g_{n}\\ \gamma_{n} \end{bmatrix}}\right\|.
 $$
 
 The vector y that minimizes this expression is given by
