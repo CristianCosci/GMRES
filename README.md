@@ -197,7 +197,7 @@ $$
 Denoting the vector $\beta \Omega_{n}e_{1}$ by
 
 $$
-{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}g_{n}\\\gamma _{n}\end{bmatrix}}}
+{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}g_{n}\\ \gamma_{n}\end{bmatrix}}}
 $$
 
 with $g_n$ ∈ $R_n$ and $γ_n$ ∈ R, this is
