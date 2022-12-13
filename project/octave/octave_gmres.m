@@ -1,10 +1,3 @@
-% dim = 10000;
-% A = sprand(dim, dim, 1.);
-% b = rand(dim, 1);
-% x0 = zeros(dim, 1);
-
-% [x, flag, relres, iter, resvec] = gmres(A, b, [], 1e-10, 10);
-
 clear
 
 function A = loadFunctionFromData(dataPath)
@@ -51,9 +44,7 @@ function [A b x0] = generateData2(dim, n=-4, seed=69, randx0=false)
     sigma = 1/(2*sqrt(dim));
     A = n * eye(dim) + normrnd(mu, sigma, dim);
     b = ones(dim, 1);
-%     A = sprand(dim, dim, den);
-%     b = rand(dim, 1);
-    
+
     if (randx0)
         x0 = rand(dim, 1);
     else
@@ -73,8 +64,7 @@ function [x res] = mygmres(A, b, x0, k, tol)
     en = zeros(k+2, 1);
     en(1) = 1;
         
-    for j = 1:k  %% TODO: ricontrollare
-%         imagesc(H);
+    for j = 1:k
         v = A*Q(:, j);   
         for i = 1:j
             H(i,j) = Q(:,i)' * v;
@@ -82,13 +72,14 @@ function [x res] = mygmres(A, b, x0, k, tol)
         end
         
         % ortogonalizzazione ??
-        v = mgorth(v, Q);
-%         H = gramschmidt(H);
-%         Q = gramschmidt(Q);
-        
+        v = mgorth(v, Q); %% è quella bella
+%         v = gramschmidt(v);
+
         H(j+1, j) = norm(v, 2);
         Q(:, j+1) = v / H(j+1, j);
-        
+
+%         % questo andrebbe rivisto
+%         % il controllo deve essere != 0
 %         if (abs(H(j+1, j)) > tol)
 %             Q(:, j+1) = Q(:,j+1)/H(j+1,j);
 %         end
@@ -96,7 +87,6 @@ function [x res] = mygmres(A, b, x0, k, tol)
         e1 = en(1:j+2);
         
         y =(H(1:j+2,1:j+1))\(beta *e1);
-%         y =(H(1:j+2,1:j+1))\(beta *e1);
         res(j) = norm(H(1:j+2,1:j+1)*y - beta*e1, 2);
 
         if (res(j) < tol)
@@ -109,31 +99,33 @@ function [x res] = mygmres(A, b, x0, k, tol)
     x = Q(:, 1:j+1)*y +x0;
     disp('🐌 Raggiunto massimo numero di Iterazioni');
     imagesc(H);
-
 endfunction
 
-%% TEST 1 - Random Matrix
-[A, b, x0] = generateData(100, .5);
+[A, b, x0] = generateData(5000, .5);
+
 % A
 % b
 % x0
-[x, res] = mygmres(A, b, x0, 50, 1e-10);
+% L = gramschmidt(A)
+
+[x, res] = mygmres(A, b, x0, 300, 1e-10);
+
 x
 x_true = A\b
 max(x_true-x)
+
 figure();
 plot(res);
 figure();
 semilogy(res);
 
-%% TEST 2 - randnorm()
 for n = [-4 -2 0 2 4]
     figure();
     printf("🍌 n = %d\n", n)
+    
     [A, b, x0] = generateData2(200, n=n);
     [x, res] = mygmres(A, b, x0, 50, 1e-10);
     
-    % x;
     x_true = A\b;
     approx_error = max(x_true-x)
     
@@ -142,39 +134,37 @@ for n = [-4 -2 0 2 4]
     semilogy(res);
 end
 
-%% GMRES(m)
 function [x res] = myrgmres(A, b, x0, k, tol, m)
     restartCount = 0;
     res = [];
     n = size(b)(1);
     en = zeros(k+2, 1);
     en(1) = 1;
-    
+    Q = zeros(n, k+1);
+
     while (restartCount < m)
         H = zeros(k+2, k+1);
-        Q = zeros(n, k+1);
 
         r0 = b - A * x0;
         beta = norm(r0, 2);
         Q(:, 1) = r0/norm(r0, 2);
 
-        for j = 1:k  %% TODO: ricontrollare
-    %         imagesc(H);
+        for j = 1:k
             v = A*Q(:, j);   
             for i = 1:j
                 H(i,j) = Q(:,i)' * v;
                 v = v - H(i, j) * Q(:, i);
             end
-%             v = myGramschmidt(v);
+            
 %             v =  gramschmidt(v);
             v = mgorth(v, Q);  % equivalente a quella sopra
-            H(j+1, j) = norm(v, 2);
-%             Q(:, j+1) = mgorth(Q(:, j+1), Q); 
-            Q(:, j+1) = v / H(j+1, j);
             
-    %         if (abs(H(j+1, j)) > tol)
-    %             Q(:, j+1) = Q(:,j+1)/H(j+1,j);
-    %         end
+            H(j+1, j) = norm(v, 2);
+            Q(:, j+1) = v / H(j+1, j);
+
+%             if (abs(H(j+1, j)) > tol)
+%                 Q(:, j+1) = v / H(j+1, j);
+%             end
 
             e1 = en(1:j+2);
 
@@ -184,26 +174,83 @@ function [x res] = myrgmres(A, b, x0, k, tol, m)
             if (res(end) < tol)
                 x = Q(:, 1:j+1)*y +x0;
                 disp('🚀 Raggiunta Tolleranza, stop');
-                imagesc(H);
+                imagesc(H(1:j, 1:j));
                 return;
             end
         end
+        
         x = Q(:, 1:j+1)*y +x0;
         x0 = x;
-%         sum(x0)
         restartCount = restartCount + 1;
+        
         disp('🐌 Raggiunto massimo numero di Iterazioni');
         disp('🗿 Restarting ...');
 %         imagesc(H);
     end
-    x = Q(:, 1:j+1)*y +x0;
+    
     disp('❌ Raggiunto massimo numero di Restart');
     imagesc(H);
 endfunction
 
-[A, b, x0] = generateData(200, .5);
-[x, res] = myrgmres(A, b, x0, 100, 1e-10, 50);
+[A, b, x0] = generateData(9000, .5);
+
+figure();
+[x, res] = myrgmres(A, b, x0, 100, 1e-10, 10);
+
+figure();
 semilogy(res);
+
+figure();
+imagesc(A(1:20, 1:20));
+% A(1:10, 1:10)
+
+[A, b, x0] = generateData2(10000, 3);
+
+figure();
+[x, res] = myrgmres(A, b, x0, 100, 1e-10, 10);
+
+figure();
+semilogy(res);
+
+figure();
+imagesc(A(1:20, 1:20));
+% A(1:10, 1:10)
+
+A = eye(10000)*120;
+
+figure();
+[x, res] = myrgmres(A, b, x0, 100, 1e-10, 10);
+
+figure();
+semilogy(res);
+
+figure();
+imagesc(A(1:20, 1:20));
+% A(1:10, 1:10)
+
+A = (ones(10000)-0.999999999999) + eye(10000)*2;
+
+figure();
+[x, res] = myrgmres(A, b, x0, 100, 1e-10, 10);
+
+figure();
+semilogy(res);
+
+figure();
+imagesc(A(1:20, 1:20));
+% A(1:10, 1:10)
+
+A = (ones(10000)+.9) + eye(10000)*3;
+
+figure();
+[x, res] = myrgmres(A, b, x0, 100, 1e-10, 10);
+
+figure();
+semilogy(res);
+
+figure();
+imagesc(A(1:20, 1:20));
+% A(1:10, 1:10)
 
 for n = [-4 -2 0 2 4]
     figure();
@@ -219,4 +266,18 @@ for n = [-4 -2 0 2 4]
     figure();
     title(["GMRES with n = " mat2str(n)]);
     semilogy(res);
+end
+
+
+function [U]=gramschmidt(V)
+[n,k] = size(V);
+U = zeros(n,k);
+U(:,1) = V(:,1)/norm(V(:,1));
+for i = 2:k
+    U(:,i)=V(:,i);
+    for j=1:i-1
+        U(:,i)=U(:,i)-(U(:,j)'*U(:,i)) * U(:,j);
+    end
+    U(:,i) = U(:,i)/norm(U(:,i));
+end
 end
