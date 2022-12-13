@@ -4,6 +4,10 @@ from scipy.linalg import norm
 import matplotlib.pyplot as plt
 import time
 from numpy import *
+import pandas as pd
+from scipy.sparse import rand
+import scipy.sparse as sparse
+import scipy.stats as stats
 
 def arnoldi_iteration(A, b, n: int, eps = 1e-12):
     
@@ -74,7 +78,38 @@ def lanczos(A, b, n:int):
     H = np.diag(alpha) + np.diag(rbeta, 1) + np.diag(rbeta, -1)
     return V, H
 
+"""
+    Function to calc relative error 
+"""
+def relative_error(xnew, xold):
+    return abs((xnew-xold)/xnew)*100
 
+"""
+    Implementation of power method 
+"""
+def power_method(A, b, iteration, eps = 1e-12):
+    
+    result = pd.DataFrame(columns=['eigenvalue', 'error']) # Create df result 
+    eign_power = [] # List of eighenvalue find with power method
+    eigenvalue = 0 # Inizialize eig
+    oldeigenvalue = 0 # Inizialize old eig
+    
+    for i in range(iteration):
+        
+        b = np.dot(A,b) # Multiply vector matrix 
+        eigenvalue = np.linalg.norm(b) # Calcolate norm of eigenvalue
+        b = b/eigenvalue 
+        error = relative_error(eigenvalue, oldeigenvalue) # Calcolate relative error between old an new eigh
+        result.loc[i] = [eigenvalue, error] # Insert eigen and error to df 
+        eign_power.append(eigenvalue) # Insert eigen find in a list 
+        
+        if error < eps: # Check accuracy 
+            break
+        
+        oldeigenvalue = eigenvalue # Swap
+    
+    print(eign_power)
+    return(eign_power)
 
 def main():
     A = np.array(
@@ -115,36 +150,119 @@ def main():
     # Matrix Q represent ortonormal bases of krylov spaces 
     print(Q)
     print()
+    # plt.imshow(Q)
+    # plt.colorbar()
+    # plt.show()
+    
+    print("--------------------")
     
     print("This is H")
     print()
     print(h)
+    # plt.imshow(h)
+    # plt.colorbar()
+    # plt.show()
     
     u,v = LA.eigh(A)
+
+    
+    
+    print("--------------------")
     
     
     print("This is u")
     # The eigenvalues in ascending order, each repeated according to its multiplicity.
-    # eigh = u.tolist()
-    # eigh.reverse()
-    # l_eigh = eigh
-    # eight_find = list(h[0])
+    # U is the eigh find by method 
+    eigh = u.tolist()
+    eigh.reverse()
 
+    # Eight find is the eigh of the arnoldi method 
+    eight_find = list(h[0])
+
+    # Print find eigh
+    print(eight_find)
+    
+    # Print method eigh
+    print(eigh)
+    
+    #print(eig_h)
+    
+    
+    """
+        Generate 1 matrix large sparse 
+        
+        Generate 1 vector large sparse
+        
+        for test convergenza power method ( OK ? )
+        
+        Il metodo delle potenze sembra essere applicabile a matrici di grnandi dimensioni 
+    """
+    large = sparse.random(10000, 10000, density=0.25, data_rvs=np.ones)
+    large_matrix = large.toarray()
+    
+    vector = sparse.random(10000, 1, density=0.25, data_rvs=np.ones)
+    large_vector = vector.toarray()
+              
+    # Recall power method 
+    prova = power_method(large_matrix, large_vector,iteration=1000, eps = 1e-10)
+
+    # Print verify
+    print(prova)
+   
+    # # plt.plot(eigh)
+    # # plt.plot(eight_find)
+    
+    """
+        Plot convergenza matrici a grandi dimensioni
+    """
+    plt.plot(prova)
+    plt.show()
+    
+    
+    """
+        Lancozos
+    """
+    
+    # V, h = lanczos(A,b,10)
+    
+    # print("--------------------")
+    # print("This is V")
+    # print(V)
+    # plt.imshow(V)
+    # plt.colorbar()
+    # plt.show()
+    
+    # print("--------------------")
+    # print("This is h")
+    # print(h)
+    # plt.imshow(h)
+    # plt.colorbar()
+    # plt.show()
+    
+    
+    # print("--------------------")
+    # eight_find = list(h[0])
+    # print(eigh)
     # print(eight_find)
-    # print(l_eigh)
     
-    # print()
+  
+        
+ 
+
+    
+if __name__ == "__main__":
+    main()
+    
+
     
     
-    # plt.plot(l_eigh)
-    # plt.plot(eight_find)
-    # plt.show()
+    """
+    #TODO Tempo di esecuzione arnoldi iter da correggere?
     
-    # plt.plot(h)
-    # plt.show()
+    
     
     k = 10
-    Preps = 1000
+    Preps = 100
     Nmin = 10
     lNmin = log(Nmin)/log(10)
     Nmax = 2000
@@ -176,7 +294,4 @@ def main():
         plt.axis((Nmin, Nmax, ax[2], ax[3]))
         plt.draw()
         plt.show()
-    
-if __name__ == "__main__":
-    main()
-
+    """
