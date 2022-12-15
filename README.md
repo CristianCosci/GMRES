@@ -75,30 +75,33 @@ The main use of Givens rotations in numerical linear algebra is to introduce zer
 The GMRES method was developed by [Yousef Saad and Martin H. Schultz](https://doi.org/10.1137/0907058) in 1986. It is a generalization and improvement of the [MINRES method](https://doi.org/10.1137/0712047) due to Paige and Saunders in 1975. The MINRES method requires that the matrix is symmetric, but has the advantage that it only requires handling of three vectors. GMRES is a special case of the DIIS method developed by Peter Pulay in 1980. DIIS is applicable to non-linear systems.
 
 ## **Method Description**
-Denote the Euclidean norm of any vector v by ${\displaystyle \|v\|}$. Denote the (square) system of linear equations to be solved by
+Denote the Euclidean norm of any vector $v$ by ${\displaystyle \|v\|}$. Denote the (square) system of linear equations to be solved by
+
 $$
 {\displaystyle Ax=b.}
 $$
 
-The matrix A is assumed to be invertible of size *m-by-m*. Furthermore, it is assumed that **b** is normalized, i.e., that ${\displaystyle \|b\|=1}$.
+The matrix A is assumed to be invertible of size *m-by-m*. Furthermore, it is assumed that **b** is normalized, i.e., that ${\displaystyle \|b\|=1}$ .
 
 The *n-th* Krylov subspace for this problem is
+
 $$
-{\displaystyle K_{n}=K_{n}(A,r_{0})=\operatorname {span} \,\{r_{0},Ar_{0},A^{2}r_{0},\ldots ,A^{n-1}r_{0}\}.\,}{\displaystyle K_{n}=K_{n}(A,r_{0})=\operatorname {span} \,\{r_{0},Ar_{0},A^{2}r_{0},\ldots ,A^{n-1}r_{0}\}.\,}
+K_{n}=K_{n}(A,r_{0})=\operatorname {span} \lbrace r_{0},Ar_{0},A^{2}r_{0},\ldots ,A^{n-1}r_{0} \rbrace
 $$
 
 where ${\displaystyle r_{0}=b-Ax_{0}}$ is the initial error given an initial guess ${\displaystyle x_{0}\neq 0}$. Clearly ${\displaystyle r_{0}=b}$ if ${\displaystyle x_{0}=0}$.
 
 GMRES approximates the exact solution of ${\displaystyle Ax=b}$ by the vector ${\displaystyle x_{n}\in K_{n}}$  that minimizes the Euclidean norm of the residual ${\displaystyle r_{n}=b-Ax_{n}}$.
 
-The vectors ${\displaystyle r_{0},Ar_{0},\ldots A^{n-1}r_{0}}$ might be close to linearly dependent, so instead of this basis, the Arnoldi iteration is used to find orthonormal vectors ${\displaystyle q_{1},q_{2},\ldots ,q_{n}\,}$, which form a basis for ${\displaystyle K_{n}}$. In particular, ${\displaystyle q_{1}=\|r_{0}\|_{2}^{-1}r_{0}}$.
+The vectors ${\displaystyle r_{0},Ar_{0},\ldots A^{n-1}r_{0}}$ might be close to linearly dependent, so instead of this basis, the Arnoldi iteration is used to find orthonormal vectors ${\displaystyle q_{1},q_{2},\ldots ,q_{n}\,}$, which form a basis for ${\displaystyle K_{n}}$. In particular, 
+$q_1 = \|\|r_{0}\|\|_{2}^{-1} r_0$ .
 
 Therefore, the vector ${\displaystyle x_{n}\in K_{n}}$  can be written as ${\displaystyle x_{n}=x_{0}+Q_{n}y_{n}}$ with ${\displaystyle y_{n}\in \mathbb {R} ^{n}}$ , where ${\displaystyle Q_{n}}$  is the m-by-n matrix formed by ${\displaystyle q_{1},\ldots ,q_{n}}$ .
 
-The Arnoldi process also produces an $({\displaystyle n+1}n+1)$-by-${\displaystyle n}$ upper Hessenberg matrix ${\displaystyle {\tilde {H}}_{n}}$ with
+The Arnoldi process also produces an $({\displaystyle n+1}n+1)\text{-by-}n$ upper Hessenberg matrix ${\displaystyle {\tilde {H}}_{n}}$ with
 
 $$
-{\displaystyle AQ_{n}=Q_{n+1}{\tilde {H}}_{n}.\,}
+{\displaystyle AQ_{n}=Q_{n+1}{\tilde {H}}_{n}.}
 $$
 
 For symmetric matrices, a symmetric tri-diagonal matrix is actually achieved, resulting in the **minres** method.
@@ -106,7 +109,12 @@ For symmetric matrices, a symmetric tri-diagonal matrix is actually achieved, re
 Because columns of ${\displaystyle Q_{n}}$ are orthonormal, we have
 
 $$
-{\displaystyle \|r_{n}\|=\|b-Ax_{n}\|=\|b-A(x_{0}+Q_{n}y_{n})\|=\|r_{0}-AQ_{n}y_{n}\|=\|\beta q_{1}-AQ_{n}y_{n}\|=\|\beta q_{1}-Q_{n+1}{\tilde {H}}_{n}y_{n}\|=\|Q_{n+1}(\beta e_{1}-{\tilde {H}}_{n}y_{n})\|=\|\beta e_{1}-{\tilde {H}}_{n}y_{n}\|,\,}
+\begin{equation}
+\begin{split}
+\|r_{n}\|=\|b-Ax_{n}\|=\|b-A(x_{0}+Q_{n}y_{n})\|= \|r_{0}-AQ_{n}y_{n}\|=\|\beta q_{1}-AQ_{n}y_{n}\| & \\ 
+= \|\beta q_{1}-Q_{n+1}{\tilde {H}}_{n}y_{n}\| = \|Q_{n+1}(\beta e_{1}-{\tilde {H}}_{n}y_{n})\|= \|\beta e_{1}-{\tilde {H}}_{n}y_{n}\|, & \\
+\end{split}
+\end{equation}
 $$
 
 where
