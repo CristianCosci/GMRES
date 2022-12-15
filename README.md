@@ -271,10 +271,10 @@ Again, the vectors ${\displaystyle g_{n}}$ are easy to update.
 
 
 ## **Convergence**
-One of the most important characteristics of GMRES is that it will always arrive at an exact solution (if one exists). At the $n$-th iteration, GMRES computes the best approximate solution to $Ax = b$ for $x_n$ $\in$ $K_n$. If A is full rank, then $K_m = F^m$, so the $m$-th iteration will always return an **exact answer**. <br>
+One of the most important characteristics of GMRES is that it will always arrive at an exact solution (if one exists). At the $n$-th iteration, GMRES computes the best approximate solution to $Ax = b$ for $x_n \in K_n$. If A is full rank, then $K_m = F^m$, so the $m$-th iteration will always return an **exact answer**. <br>
 Sometimes, the exact solution $x \in K_n$ for some $n < m$, in this case $x_n$ is an exact solution. In either case, the algorithm is convergent after n steps if the $n$-th residual is sufficiently small.
 
-This does not happen in general. Indeed, a theorem of Greenbaum, Pták and Strakoš states that for every nonincreasing sequence $a_1, ..., a_{m−1}, a_m = 0$, one can find a matrix A such that the $||r_n||$ = an for all n, where $r_n$ is the residual defined above. In particular, it is possible to find a matrix for which the residual stays constant for m − 1 iterations, and only drops to zero at the last iteration.
+This does not happen in general. Indeed, a theorem of Greenbaum, Pták and Strakoš states that for every nonincreasing sequence $a_1, ..., a_{m−1}, a_m = 0$, one can find a matrix A such that the $||r_n|| = a_n$ for all $n$ , where $r_n$ is the residual defined above. In particular, it is possible to find a matrix for which the residual stays constant for $m − 1$ iterations, and only drops to zero at the last iteration.
 
 In practice, though, GMRES often performs well. This can be proven in specific situations. If the symmetric part of A, that is ${\displaystyle (A^{T}+A)/2}$, is positive definite, then
 
@@ -298,7 +298,7 @@ $$
 {\displaystyle {\frac {\|r_{n}\|}{\|b\|}}\leq \inf _{p\in P_{n}}\|p(A)\|\leq \kappa _{2}(V)\inf _{p\in P_{n}}\max _{\lambda \in \sigma (A)}|p(\lambda )|,\,}
 $$
 
-where $P_n$ denotes the set of polynomials of degree at most n with p(0) = 1, V is the matrix appearing in the spectral decomposition of A, and $\sigma(A)$ is the spectrum of A. Roughly speaking, this says that fast convergence occurs when the eigenvalues of A are clustered away from the origin and A is not too far from normality.
+where $P_n$ denotes the set of polynomials of degree at most n with $p(0) = 1$ , $V$ is the matrix appearing in the spectral decomposition of $A$ , and $\sigma(A)$ is the spectrum of $A$ . Roughly speaking, this says that fast convergence occurs when the eigenvalues of $A$ are clustered away from the origin and $A$ is not too far from normality.
 
 All these inequalities bound only the residuals instead of the actual error, that is, the distance between the current iterate $x_n$ and the exact solution.
 
