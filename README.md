@@ -167,7 +167,10 @@ $$
 The triangular matrix has one more row than it has columns, so its bottom row consists of zero. Hence, it can be decomposed as
 
 $$
-{\tilde  {R}}_{n}={\begin{bmatrix}R_{n}\\0\end{bmatrix}},
+{\tilde  {R}}_{n}=\begin{bmatrix}
+R_{n} \\
+0
+\end{bmatrix},
 $$
 
 where ${\displaystyle R_{n}}$ is an n-by-n (thus square) triangular matrix.
@@ -175,19 +178,34 @@ where ${\displaystyle R_{n}}$ is an n-by-n (thus square) triangular matrix.
 The QR decomposition can be updated cheaply from one iteration to the next, because the Hessenberg matrices differ only by a row of zeros and a column:
 
 $$
-{\tilde  {H}}_{{n+1}}={\begin{bmatrix}{\tilde  {H}}_{n}&h_{{n+1}}\\0&h_{{n+2,n+1}}\end{bmatrix}},
+{\tilde  {H}}_{{n+1}}= \begin{bmatrix}
+{\tilde  {H}}_{n} & h_{{n+1}} \\
+0 & h_{{n+2,n+1}}
+\end{bmatrix},
 $$
 
 where $h_{n+1} = (h1_{,n+1}, …, h_{n+1,n+1})^T$. This implies that premultiplying the Hessenberg matrix with $\Omega_n$, augmented with zeroes and a row with multiplicative identity, yields almost a triangular matrix:
 
 $$
-{\begin{bmatrix}\Omega _{n}&0\\0&1\end{bmatrix}}{\tilde  {H}}_{{n+1}}={\begin{bmatrix}R_{n}&r_{{n+1}}\\0&\rho \\0&\sigma \end{bmatrix}}
+\begin{bmatrix}
+\Omega _{n} & 0 \\
+0 & 1
+\end{bmatrix}
+{\tilde  {H}}_{{n+1}}= \begin{bmatrix}
+R_{n} & r_{{n+1}} \\
+0 & \rho \\
+0 & \sigma 
+\end{bmatrix}
 $$
 
 This would be triangular if σ is zero. To remedy this, one needs the [Givens rotation](#givens-rotation).
 
 $$
-G_{n}={\begin{bmatrix}I_{{n}}&0&0\\0&c_{n}&s_{n}\\0&-s_{n}&c_{n}\end{bmatrix}}
+G_{n}= \begin{bmatrix}
+I_{{n}} & 0 & 0 \\
+0 & c_{n} & s_{n} \\
+0 & -s_{n} & c_{n}
+\end{bmatrix}
 $$
 
 where
@@ -199,13 +217,20 @@ $$
 With this Givens rotation, we form
 
 $$
-\Omega _{{n+1}}=G_{n}{\begin{bmatrix}\Omega _{n}&0\\0&1\end{bmatrix}}.
+\Omega _{{n+1}}=G_{n} \begin{bmatrix}
+\Omega _{n} & 0 \\
+0 & 1
+\end{bmatrix}.
 $$
 
 Indeed,
 
 $$
-{\displaystyle \Omega _{n+1}{\tilde {H}}_{n+1}={\begin{bmatrix}R_{n}&r_{n+1}\\0&r_{n+1,n+1}\\0&0\end{bmatrix}}\quad {\text{with}}\quad r_{n+1,n+1}={\sqrt {\rho ^{2}+\sigma ^{2}}}}
+\Omega _{n+1}{\tilde {H}}_{n+1} = \begin{bmatrix}
+R_{n} & r_{n+1} \\
+0 & r_{n+1,n+1} \\
+0 & 0
+\end{bmatrix} , \ \ r_{n+1,n+1}=\sqrt{\rho ^{2}+\sigma ^{2}}
 $$
 
 is a triangular matrix. <br>
@@ -218,13 +243,22 @@ $$
 Denoting the vector $\beta \Omega_{n}e_{1}$ by
 
 $$
-{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}g_{n}\\\gamma _{n}\end{bmatrix}}}
+{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}
+g_{n}\\
+\gamma _{n}
+\end{bmatrix}}}
 $$
 
 with $g_n$ ∈ $R_n$ and $γ_n$ ∈ R, this is
 
 $$
-\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}R_{n}\\0\end{bmatrix}}y_{n}-{\begin{bmatrix}g_{n}\\\gamma_{n} \end{bmatrix}}\right\|.
+\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}
+R_{n} \\
+0
+\end{bmatrix}}y_{n}-{\begin{bmatrix}
+g_{n} \\
+\gamma_{n} 
+\end{bmatrix}}\right\|.
 $$
 
 The vector y that minimizes this expression is given by
