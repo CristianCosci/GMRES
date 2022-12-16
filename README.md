@@ -230,7 +230,7 @@ $$
 R_{n} & r_{n+1} \\
 0 & r_{n+1,n+1} \\
 0 & 0
-\end{bmatrix} , \ \ r_{n+1,n+1}=\sqrt{\rho ^{2}+\sigma ^{2}}
+\end{bmatrix} with \ \ r_{n+1,n+1}=\sqrt{\rho ^{2}+\sigma ^{2}}
 $$
 
 is a triangular matrix. <br>
