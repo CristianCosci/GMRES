@@ -93,7 +93,7 @@ where ${\displaystyle r_{0}=b-Ax_{0}}$ is the initial error given an initial gue
 
 GMRES approximates the exact solution of ${\displaystyle Ax=b}$ by the vector ${\displaystyle x_{n}\in K_{n}}$  that minimizes the Euclidean norm of the residual ${\displaystyle r_{n}=b-Ax_{n}}$.
 
-The vectors ${\displaystyle r_{0},Ar_{0},\ldots A^{n-1}r_{0}}$ might be close to linearly dependent, so instead of this basis, the Arnoldi iteration is used to find orthonormal vectors ${\displaystyle q_{1},q_{2},\ldots ,q_{n}\,}$, which form a basis for ${\displaystyle K_{n}}$. In particular, 
+The vectors ${\displaystyle r_{0},Ar_{0},\ldots A^{n-1}r_{0}}$ might be close to linearly dependent, so instead of this basis, the Arnoldi iteration is used to find orthonormal vectors ${\displaystyle q_{1},q_{2},\ldots ,q_{n}\}$, which form a basis for ${\displaystyle K_{n}}$. In particular, 
 $q_1 = \|\|r_{0}\|\|_{2}^{-1} r_0$ .
 
 Therefore, the vector ${\displaystyle x_{n}\in K_{n}}$  can be written as ${\displaystyle x_{n}=x_{0}+Q_{n}y_{n}}$ with ${\displaystyle y_{n}\in \mathbb {R} ^{n}}$ , where ${\displaystyle Q_{n}}$  is the m-by-n matrix formed by ${\displaystyle q_{1},\ldots ,q_{n}}$ .
