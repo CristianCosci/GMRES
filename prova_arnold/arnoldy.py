@@ -7,7 +7,7 @@ from numpy import *
 import pandas as pd
 from scipy.sparse import rand
 import scipy.sparse as sparse
-import scipy.stats as stats
+
 
 def arnoldi_iteration(A, b, n: int, eps = 1e-12):
     
@@ -30,6 +30,7 @@ def arnoldi_iteration(A, b, n: int, eps = 1e-12):
     print()
     print(A)
     
+    
     h = np.zeros((n+1,n))
     Q = np.zeros((A.shape[0],n+1))
     q = b/np.linalg.norm(b,2)  # Normalize the input vector
@@ -46,8 +47,10 @@ def arnoldi_iteration(A, b, n: int, eps = 1e-12):
         h[k,k-1] = np.linalg.norm(v,2)
         if h[k,k-1] > eps:  # Add the produced vector to the list, unless
             Q[:,k] = v/h[k,k-1]
+        
         else:  # If that happens, stop iterating.
             return Q, h
+        
     return Q, h
 
 
@@ -81,16 +84,19 @@ def lanczos(A, b, n:int):
 """
     Function to calc relative error 
 """
+
 def relative_error(xnew, xold):
     return abs((xnew-xold)/xnew)*100
 
 """
     Implementation of power method 
 """
-def power_method(A, b, iteration, eps = 1e-12):
+
+def power_method(A, b, iteration:100, eps = 1e-10):
     
     result = pd.DataFrame(columns=['eigenvalue', 'error']) # Create df result 
     eign_power = [] # List of eighenvalue find with power method
+    error_power = []
     eigenvalue = 0 # Inizialize eig
     oldeigenvalue = 0 # Inizialize old eig
     
@@ -98,51 +104,57 @@ def power_method(A, b, iteration, eps = 1e-12):
         
         b = np.dot(A,b) # Multiply vector matrix 
         eigenvalue = np.linalg.norm(b) # Calcolate norm of eigenvalue
-        b = b/eigenvalue 
+        b = b/eigenvalue  #Re normalize the vector
         error = relative_error(eigenvalue, oldeigenvalue) # Calcolate relative error between old an new eigh
         result.loc[i] = [eigenvalue, error] # Insert eigen and error to df 
-        eign_power.append(eigenvalue) # Insert eigen find in a list 
         
         if error < eps: # Check accuracy 
             break
         
         oldeigenvalue = eigenvalue # Swap
     
-    print(eign_power)
-    return(eign_power)
+    return result
+
+
 
 def main():
-    A = np.array(
-        [
-        [1,1,1,0,1,0,2,1,3,1],
-        [1,4,1,4,1,3,2,1,3,1],
-        [2,1,1,2,1,0,5,1,3,1],
-        [1,1,1,4,1,2,2,1,3,4],
-        [1,1,2,3,1,2,2,1,4,1],
-        [1,1,3,4,1,2,3,1,3,4],
-        [1,1,1,3,1,2,2,1,3,2],
-        [1,1,1,4,1,5,2,4,3,3],
-        [1,4,1,4,1,4,2,1,3,4],
-        [3,1,1,3,1,3,2,1,3,3]
-        ]
-    )
+    # A = np.array(
+    #     [
+    #     [1,1,1,0,1,0,2,1,3,1],
+    #     [1,4,1,4,1,3,2,1,3,1],
+    #     [2,1,1,2,1,0,5,1,3,1],
+    #     [1,1,1,4,1,2,2,1,3,4],
+    #     [1,1,2,3,1,2,2,1,4,1],
+    #     [1,1,3,4,1,2,3,1,3,4],
+    #     [1,1,1,3,1,2,2,1,3,2],
+    #     [1,1,1,4,1,5,2,4,3,3],
+    #     [1,4,1,4,1,4,2,1,3,4],
+    #     [3,1,1,3,1,3,2,1,3,3]
+    #     ]
+    # )
     
-    b = np.array(
-                [ 
-                [1],
-                [2],
-                [1],
-                [2],
-                [1],
-                [2],
-                [1],
-                [2],
-                [1],
-                [2]
-                ]
-            ) 
+    # b = np.array(
+    #             [ 
+    #             [1],
+    #             [2],
+    #             [1],
+    #             [2],
+    #             [1],
+    #             [2],
+    #             [1],
+    #             [2],
+    #             [1],
+    #             [2]
+    #             ]
+    #         ) 
     
-    Q, h = arnoldi_iteration(A, b, 10, eps = 1e-12)
+    large = sparse.random(10, 10, density=0.30, data_rvs=np.ones)
+    large_matrix = large.toarray()
+    
+    vector = sparse.random(10, 1, density=0.30, data_rvs=np.ones)
+    large_vector = vector.toarray()
+    
+    Q, h = arnoldi_iteration(large_matrix, large_vector, 10, eps = 1e-12)
     
     print()
     
@@ -150,42 +162,75 @@ def main():
     # Matrix Q represent ortonormal bases of krylov spaces 
     print(Q)
     print()
-    # plt.imshow(Q)
-    # plt.colorbar()
-    # plt.show()
+    plt.title('Ortonormal bases of krylov spaces')
+    plt.imshow(Q)
+    plt.colorbar()
+    plt.show()
     
     print("--------------------")
     
     print("This is H")
     print()
     print(h)
-    # plt.imshow(h)
-    # plt.colorbar()
-    # plt.show()
+    plt.title('Upper Hessemberg Matrix')
+    plt.imshow(h)
+    plt.colorbar()
+    plt.show()
     
-    u,v = LA.eigh(A)
+   
+    u = linalg.eigvals(large_matrix)
 
     
     
     print("--------------------")
     
-    
     print("This is u")
     # The eigenvalues in ascending order, each repeated according to its multiplicity.
     # U is the eigh find by method 
-    eigh = u.tolist()
-    eigh.reverse()
+    eigh = list(u)
 
     # Eight find is the eigh of the arnoldi method 
     eight_find = list(h[0])
-
-    # Print find eigh
-    print(eight_find)
     
-    # Print method eigh
-    print(eigh)
+    s1 = sort(eigh)
+    s2 = sort(eight_find).tolist()
     
-    #print(eig_h)
+    start1 = s1[0:5]
+    start2 = s2[0:5]
+    
+    highest1 = s1[-1]
+    highest2 = s2[-1]
+    
+    print(highest1)
+    print(highest2)
+    
+    print(start1)
+    print(start2)
+    
+    end1 = s1[:5]
+    end2 = s2[:5]
+    
+    res = power_method(large_matrix, large_vector,iteration=10, eps = 1e-12)
+    
+    print(res['eigenvalue'])
+    
+    """
+        Plot graph difference
+    """
+    
+    plt.title('Eigenvalue difference between find by arnoldi and original')
+    plt.plot(start1, '-o', label="eighenvalue find by arnoldi")
+    #plt.plot(res['eigenvalue'], '-o', label="eighenvalue power method")
+    plt.plot(start2, '-o', label="eighenvalue original")
+    plt.legend(loc="upper right")
+    plt.show()
+    
+    plt.title('Eigenvalue difference between find by arnoldi and original')
+    plt.plot(end1, '-o', label="eighenvalue find by arnoldi")
+    #plt.plot(res['eigenvalue'], '-o', label="eighenvalue power method")
+    plt.plot(end2, '-o', label="eighenvalue original")
+    plt.legend(loc="upper right")
+    plt.show()
     
     
     """
@@ -193,59 +238,38 @@ def main():
         
         Generate 1 vector large sparse
         
-        for test convergenza power method ( OK ? )
+        for test convergenza power method
         
         Il metodo delle potenze sembra essere applicabile a matrici di grnandi dimensioni 
     """
-    large = sparse.random(10000, 10000, density=0.25, data_rvs=np.ones)
-    large_matrix = large.toarray()
     
-    vector = sparse.random(10000, 1, density=0.25, data_rvs=np.ones)
-    large_vector = vector.toarray()
+    # large = sparse.random(1000, 1000, density=0.20, data_rvs=np.ones)
+    # large_matrix = large.toarray()
+    
+    # vector = sparse.random(1000, 1, density=0.20, data_rvs=np.ones)
+    # large_vector = vector.toarray()
               
     # Recall power method 
-    prova = power_method(large_matrix, large_vector,iteration=1000, eps = 1e-10)
+    res = power_method(large_matrix, large_vector,iteration=100, eps = 1e-12)
 
     # Print verify
-    print(prova)
-   
-    # # plt.plot(eigh)
-    # # plt.plot(eight_find)
+    print(res)
     
     """
         Plot convergenza matrici a grandi dimensioni
     """
-    plt.plot(prova)
+    
+    # plt.title('Convergence of eigenvalue by methof of power')
+    # plt.plot(res['eigenvalue'])
+    # plt.show()
+        
+    plt.title('Eigenvalue difference between find by arnoldi and original')
+    plt.plot(highest2, '-o', label="eighenvalue find by arnoldi")
+    plt.plot(res['eigenvalue'], '-o', label="eighenvalue power method")
+    plt.plot(highest1, '-o', label="eighenvalue original")
+    plt.legend(loc="upper right")
     plt.show()
-    
-    
-    """
-        Lancozos
-    """
-    
-    # V, h = lanczos(A,b,10)
-    
-    # print("--------------------")
-    # print("This is V")
-    # print(V)
-    # plt.imshow(V)
-    # plt.colorbar()
-    # plt.show()
-    
-    # print("--------------------")
-    # print("This is h")
-    # print(h)
-    # plt.imshow(h)
-    # plt.colorbar()
-    # plt.show()
-    
-    
-    # print("--------------------")
-    # eight_find = list(h[0])
-    # print(eigh)
-    # print(eight_find)
-    
-  
+
         
  
 
@@ -294,4 +318,39 @@ if __name__ == "__main__":
         plt.axis((Nmin, Nmax, ax[2], ax[3]))
         plt.draw()
         plt.show()
+    """
+    
+    
+    """
+    #TODO: Verificare correttezza grafico 
+    
+    # eigenvalues = eigvals(A)
+
+    # fig = plt.figure(figsize=(8, 8))
+    # ax = fig.add_subplot(111)
+    # ax.plot(np.real(eigenvalues), np.imag(eigenvalues), 'rx', markersize=1)
+    
+    # plt.show()
+    
+    # shifts = [0, 1, 2, 5, 10]
+    # colors = ['r', 'k', 'y', 'g', 'm']
+
+    # b = np.random.randn(10)
+
+    # fig = plt.figure(figsize=(8, 8))
+    # ax = fig.add_subplot(111)
+
+    # for index, shift in enumerate(shifts):
+    #     Ashift = A + shift * np.eye(10)
+    #     residuals = []
+    #     callback = lambda res: residuals.append(res)
+    #     x, _ = gmres(Ashift, b, restart=None, callback=callback, callback_type='pr_norm')
+    #     if len(residuals) > 50:
+    #         residuals = residuals[:50] # Only plot the first 50 residuals
+    #     ax.semilogy(residuals, colors[index] + '-x', markersize=2)
+        
+    # fig.legend(loc='lower center', fancybox=True, shadow=True, ncol=len(shifts), labels=[str(shift) for shift in shifts])
+    
+    # plt.show()
+    
     """
