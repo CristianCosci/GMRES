@@ -98,7 +98,7 @@ $q_1 = \|\|r_{0}\|\|_{2}^{-1} r_0$ .
 
 Therefore, the vector ${\displaystyle x_{n}\in K_{n}}$  can be written as ${\displaystyle x_{n}=x_{0}+Q_{n}y_{n}}$ with ${\displaystyle y_{n}\in \mathbb {R} ^{n}}$ , where ${\displaystyle Q_{n}}$  is the m-by-n matrix formed by ${\displaystyle q_{1},\ldots ,q_{n}}$ .
 
-The Arnoldi process also produces an $({\displaystyle n+1}n+1)\text{-by-}n$ upper Hessenberg matrix ${\displaystyle {\tilde {H}}_{n}}$ with
+The Arnoldi process also produces an $({\displaystyle n+1})\text{-by-}n$ upper Hessenberg matrix ${\displaystyle {\tilde {H}}_{n}}$ with
 
 $$
 {\displaystyle AQ_{n}=Q_{n+1}{\tilde {H}}_{n}.}
