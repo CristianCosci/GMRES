@@ -5,7 +5,6 @@
 1. [**Introduction**](#introduction)
    - [**Krylov Subspace**](#krylov-subspace)
    - [**Arnoldi Iteration**](#arnoldi-iteration)
-   - [**Givens Rotation**](#givens-rotation)
 2. [**Generalized minimal residual method**](#generalized-minimal-residual-method)
    - [**Method Description**](#method-description)
    - [**The least squares problem**](#the-least-squares-problem)
@@ -39,40 +38,10 @@ In numerical linear algebra, the **Arnoldi iteration** is an eigenvalue algorith
 
 The Arnoldi method belongs to a class of linear algebra algorithms that give a partial result after a small number of iterations, in contrast to so-called direct methods which must complete to give any useful results (see for example, Householder transformation). The partial result in this case being the first few vectors of the basis the algorithm is building.
 
-
-#### **Givens Rotation**
-In numerical linear algebra, a Givens rotation is a rotation in the plane spanned by two coordinates axes. Givens rotations are named after Wallace Givens, who introduced them to numerical analysts in the 1950s while he was working at Argonne National Laboratory.
-
-A Givens rotation is represented by a matrix of the form
-
-$$
-G(i,j,\theta ) = \begin{bmatrix}
-1 & \cdots & 0 & \cdots & 0 & \cdots & 0 \\
-\vdots & \ddots & \vdots & & \vdots & & \vdots \\
-0 & \cdots & c & \cdots & -s & \cdots & 0 \\
-\vdots & & \vdots & \ddots & \vdots & & \vdots \\
-0 & \cdots & s & \cdots & c & \cdots & 0 \\
-\vdots & & \vdots & & \vdots & \ddots & \vdots \\
-0 & \cdots & 0 & \cdots & 0 & \cdots & 1
-\end{bmatrix} ,
-$$
-
-where $c = cos \theta$ and $s = sin \theta$ appear at the intersections ith and jth rows and columns. That is, for fixed i > j, the non-zero elements of Givens matrix are given by:
-
-$$
-\begin{aligned}
-g_{kk} & {}=1 \qquad { \text{for} } \ k \neq i, \ , j\\
-g_{kk} & {}=c \qquad {\text{for} } \ k=i, \ , j\\
-g_{ji} & {}=-g_{ij}=-s\\
-\end{aligned}
-$$
-
-The product $G(i, j, θ)x$ represents a counterclockwise rotation of the vector $x$ in the $(i, j)$ plane of $\theta$ radians, hence the name Givens rotation.
-
-The main use of Givens rotations in numerical linear algebra is to introduce zeros in vectors or matrices. This effect can, for example, be employed for computing the QR decomposition of a matrix. One advantage over Householder transformations is that they can easily be parallelised, and another is that often for very sparse matrices they have a lower operation count.
+<hr>
 
 # **Generalized minimal residual method**
-The GMRES method was developed by [Yousef Saad and Martin H. Schultz](https://doi.org/10.1137/0907058) in 1986. It is a generalization and improvement of the [MINRES method](https://doi.org/10.1137/0712047) due to Paige and Saunders in 1975. The MINRES method requires that the matrix is symmetric, but has the advantage that it only requires handling of three vectors. GMRES is a special case of the DIIS method developed by Peter Pulay in 1980. DIIS is applicable to non-linear systems.
+The GMRES method was developed by [Yousef Saad and Martin H. Schultz](https://doi.org/10.1137/0907058) in 1986. It is a generalization and improvement of the [MINRES method](https://doi.org/10.1137/0712047) due to Paige and Saunders in 1975. The MINRES method requires that the matrix is symmetric, but has the advantage that it only requires handling of three vectors. GMRES is a special case of the DIIS method developed by Peter Pulay in 1980 (DIIS is applicable to non-linear system).
 
 ## **Method Description**
 Denote the Euclidean norm of any vector $v$ by ${\displaystyle \|v\|}$. Denote the (square) system of linear equations to be solved by
@@ -93,7 +62,7 @@ where ${\displaystyle r_{0}=b-Ax_{0}}$ is the initial error given an initial gue
 
 GMRES approximates the exact solution of ${\displaystyle Ax=b}$ by the vector ${\displaystyle x_{n}\in K_{n}}$  that minimizes the Euclidean norm of the residual ${\displaystyle r_{n}=b-Ax_{n}}$.
 
-The vectors ${\displaystyle r_{0},Ar_{0},\ldots A^{n-1}r_{0}}$ might be close to linearly dependent, so instead of this basis, the Arnoldi iteration is used to find orthonormal vectors ${\displaystyle q_{1},q_{2},\ldots ,q_{n}\}$, which form a basis for ${\displaystyle K_{n}}$. In particular, 
+The vectors ${\displaystyle r_{0},Ar_{0},\ldots A^{n-1}r_{0}}$ might be close to linearly dependent, so instead of this basis, the Arnoldi iteration is used to find orthonormal vectors $q_{1},q_{2},\ldots ,q_{n}$, which form a basis for ${\displaystyle K_{n}}$. In particular, 
 $q_1 = \|\|r_{0}\|\|_{2}^{-1} r_0$ .
 
 Therefore, the vector ${\displaystyle x_{n}\in K_{n}}$  can be written as ${\displaystyle x_{n}=x_{0}+Q_{n}y_{n}}$ with ${\displaystyle y_{n}\in \mathbb {R} ^{n}}$ , where ${\displaystyle Q_{n}}$  is the m-by-n matrix formed by ${\displaystyle q_{1},\ldots ,q_{n}}$ .
@@ -156,118 +125,7 @@ $$
 {\displaystyle \|{\tilde {H}}_{n}y_{n}-\beta e_{1}\|.\,}
 $$
 
-Note that ${\displaystyle {\tilde {H}}_{n}}$ is an (n + 1)-by-n matrix, hence it gives an over-constrained linear system of n+1 equations for n unknowns.
-
-The minimum can be computed using a QR decomposition: find an (n + 1)-by-(n + 1) orthogonal matrix Ωn and an (n + 1)-by-n upper triangular matrix ${\displaystyle {\tilde {R}}_{n}}$ such that
-
-$$
-{\displaystyle \Omega _{n}{\tilde {H}}_{n}={\tilde {R}}_{n}.}
-$$
-
-The triangular matrix has one more row than it has columns, so its bottom row consists of zero. Hence, it can be decomposed as
-
-$$
-{\tilde  {R}}_{n}=\begin{bmatrix}
-R_{n} \\
-0
-\end{bmatrix},
-$$
-
-where ${\displaystyle R_{n}}$ is an n-by-n (thus square) triangular matrix.
-
-The QR decomposition can be updated cheaply from one iteration to the next, because the Hessenberg matrices differ only by a row of zeros and a column:
-
-$$
-{\tilde  {H}}_{{n+1}}= \begin{bmatrix}
-{\tilde  {H}}_{n} & h_{{n+1}} \\
-0 & h_{{n+2,n+1}}
-\end{bmatrix},
-$$
-
-where $h_{n+1} = (h1_{,n+1}, …, h_{n+1,n+1})^T$. This implies that premultiplying the Hessenberg matrix with $\Omega_n$, augmented with zeroes and a row with multiplicative identity, yields almost a triangular matrix:
-
-$$
-\begin{bmatrix}
-\Omega _{n} & 0 \\
-0 & 1
-\end{bmatrix}
-{\tilde  {H}}_{{n+1}}= \begin{bmatrix}
-R_{n} & r_{{n+1}} \\
-0 & \rho \\
-0 & \sigma 
-\end{bmatrix}
-$$
-
-This would be triangular if σ is zero. To remedy this, one needs the [Givens rotation](#givens-rotation).
-
-$$
-G_{n}= \begin{bmatrix}
-I_{{n}} & 0 & 0 \\
-0 & c_{n} & s_{n} \\
-0 & -s_{n} & c_{n}
-\end{bmatrix}
-$$
-
-where
-
-$$
-{\displaystyle c_{n}={\frac {\rho }{\sqrt {\rho ^{2}+\sigma ^{2}}}}\quad {{and}}\quad s_{n}={\frac {\sigma }{\sqrt {\rho ^{2}+\sigma ^{2}}}}.}
-$$
-
-With this Givens rotation, we form
-
-$$
-\Omega _{{n+1}}=G_{n} \begin{bmatrix}
-\Omega _{n} & 0 \\
-0 & 1
-\end{bmatrix}.
-$$
-
-Indeed,
-
-$$
-\Omega _{n+1}{\tilde {H}}_{n+1} = \begin{bmatrix}
-R_{n} & r_{n+1} \\
-0 & r_{n+1,n+1} \\
-0 & 0
-\end{bmatrix} with \ \ r_{n+1,n+1}=\sqrt{\rho ^{2}+\sigma ^{2}}
-$$
-
-is a triangular matrix. <br>
-Given the QR decomposition, the minimization problem is easily solved by noting that
-
-$$
-\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|\Omega _{n}({\tilde  {H}}_{n}y_{n}-\beta e_{1})\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|.
-$$
-
-Denoting the vector $\beta \Omega_{n}e_{1}$ by
-
-$$
-{\displaystyle {\tilde {g}}_{n}={\begin{bmatrix}
-g_{n}\\
-\gamma _{n}
-\end{bmatrix}}}
-$$
-
-with $g_n$ ∈ $R_n$ and $γ_n$ ∈ R, this is
-
-$$
-\|{\tilde  {H}}_{n}y_{n}-\beta e_{1}\|=\|{\tilde  {R}}_{n}y_{n}-\beta \Omega _{n}e_{1}\|=\left\|{\begin{bmatrix}
-R_{n} \\
-0
-\end{bmatrix}}y_{n}-{\begin{bmatrix}
-g_{n} \\
-\gamma_{n} 
-\end{bmatrix}}\right\|.
-$$
-
-The vector y that minimizes this expression is given by
-
-$$
-{\displaystyle y_{n}=R_{n}^{-1}g_{n}.}
-$$
-
-Again, the vectors ${\displaystyle g_{n}}$ are easy to update.
+In some practical implementation this part is solved using [Givens rotation](https://en.wikipedia.org/wiki/Givens_rotation) but in this vanilla one we do without it in order to make it easier to understand.
 
 
 ## **Convergence**
