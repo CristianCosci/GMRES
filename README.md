@@ -52,9 +52,9 @@ The Arnoldi method belongs to a class of linear algebra algorithms that give a p
 
 #### Finding eigenvalues with the Arnoldi iteration
 
-The idea of the Arnoldi iteration as an eigenvalue algorithm is to compute the eigenvalues in the Krylov subspace. The eigenvalues of H_n are called the **Ritz eigenvalues**. Since H_n is a Hessenberg matrix of modest size, its eigenvalues can be computed efficiently, for instance with the QR algorithm, or somewhat related, Francis's algorithm. Also Francis's algorithm itself can be considered to be related to power iterations, operating on nested Krylov subspace. In fact, the most basic form of Francis's algorithm appears to be to choose b to be equal to Ae1, and extending n to the full dimension of A. Improved versions include one or more shifts, and higher powers of A may be applied in a single steps. <br>
+The idea of the Arnoldi iteration as an eigenvalue algorithm is to compute the eigenvalues in the Krylov subspace. The eigenvalues of $H_n$ are called the **Ritz eigenvalues**. Since $H_n$ is a Hessenberg matrix of modest size, its eigenvalues can be computed efficiently, for instance with the QR algorithm, or somewhat related, Francis's algorithm. Also Francis's algorithm itself can be considered to be related to power iterations, operating on nested Krylov subspace. In fact, the most basic form of Francis's algorithm appears to be to choose b to be equal to Ae1, and extending n to the full dimension of A. Improved versions include one or more shifts, and higher powers of A may be applied in a single steps. <br>
 
-It is often observed in practice that some of the **Ritz eigenvalues** converge to eigenvalues of **A**. Since Hn is n-by-n, it has at most n eigenvalues, and not all eigenvalues of A can be approximated. Typically, the Ritz eigenvalues converge to the largest eigenvalues of A. To get the smallest eigenvalues of A, the inverse (operation) of A should be used instead. This can be related to the characterization of H_n as the matrix whose characteristic polynomial minimizes || p(A) || q_1 in the following way. A good way to get p(A) small is to choose the polynomial p such that p(x) is small whenever x is an eigenvalue of A. Hence, the zeros of p (and thus the Ritz eigenvalues) will be close to the eigenvalues of A.
+It is often observed in practice that some of the **Ritz eigenvalues** converge to eigenvalues of **A**. Since Hn is n-by-n, it has at most n eigenvalues, and not all eigenvalues of A can be approximated. Typically, the Ritz eigenvalues converge to the largest eigenvalues of A. To get the smallest eigenvalues of A, the inverse (operation) of A should be used instead. This can be related to the characterization of $H_n$ as the matrix whose characteristic polynomial minimizes || $p(A)$ || $q_1$ in the following way. A good way to get p(A) small is to choose the polynomial p such that p(x) is small whenever x is an eigenvalue of A. Hence, the zeros of p (and thus the Ritz eigenvalues) will be close to the eigenvalues of A.
 
 However, the details are not fully understood yet. This is in contrast to the case where A is Hermitian. In that situation, the Arnoldi iteration becomes the Lanczos iteration, for which the theory is more complete.
 
@@ -74,17 +74,17 @@ $$
 b_{k+1} = \frac{Ab_k}{\parallel Ab_k  \parallel}
 $$
 
-So, at every iteration, the vector b_k is multiplied by the matrix **A** and normalized. <br>
+So, at every iteration, the vector $b_k$ is multiplied by the matrix **A** and normalized. <br>
 
-If we assume A has an eigenvalue that is strictly greater in magnitude than its other eigenvalues and the starting vector b_0 has a nonzero component in the direction of an eigenvector associated with the dominant eigenvalue, then a subsequence b_k converges to an eigenvector associated with the dominant eigenvalue. <br>
+If we assume A has an eigenvalue that is strictly greater in magnitude than its other eigenvalues and the starting vector $b_0$ has a nonzero component in the direction of an eigenvector associated with the dominant eigenvalue, then a subsequence $b_k$ converges to an eigenvector associated with the dominant eigenvalue. <br>
 
-Without the two assumptions above, the sequence b_k does not necessarily converge. In this sequence: <br>
+Without the two assumptions above, the sequence $b_k$ does not necessarily converge. In this sequence: <br>
 
 $$
 b_{k} = e^{i \phi k}v_1 + r_k
 $$
 
-where v_1 is an eigenvector associated with the dominant eigenvalue, and ||r^{k}|| -> 0. The presence of the term e^{i \phi k} implies that b^k does not converge unless e^{i \phi k}=1. Under the two assumptions listed above, the sequence \mu_k defined by <br>
+where $v_1$ is an eigenvector associated with the dominant eigenvalue, and || $r^{k}$ || -> 0. The presence of the term $e^{i \phi k}$ implies that $b^k$ does not converge unless $e^{i \phi k}=1$. Under the two assumptions listed above, the sequence $\mu_k$ defined by <br>
 
 $$
 \mu k=\frac{b*k^{*Ab\*k}}{b_k^{b_k}}
