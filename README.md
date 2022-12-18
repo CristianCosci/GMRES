@@ -116,7 +116,7 @@ Maximum size allocable on the machine:
 
 This is the output of the matrix Q (orthonormal basis of the Krylov subspace.)
 
-![Matrix Q](../GMRES_python/arnoldi_method/img/q_matrix_noCluster.png)
+![Matrix Q](/arnoldi_method/img/q_matrix_noCluster.png)
 
 <br>
 
