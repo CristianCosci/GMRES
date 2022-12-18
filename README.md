@@ -20,7 +20,7 @@
      - [**Clustered Matrix**](#non-clustered-matrix)
 
    - [**Power Method**](#method-of-power)
-     - [Comparison of eigenvalues found](#comparison-of-eigenvalues-found)
+     - [**Comparison of eigenvalues found**](#comparison-of-eigenvalues-found)
 
    <hr>
 
