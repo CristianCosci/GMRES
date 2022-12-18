@@ -16,9 +16,9 @@
 
 4. [**Results**](#results)
 
-   - [**Non-clustered Matrix**]
+   - [**Non-clustered Matrix**](#non-clustered-matrix)
 
-   - [**Clustered Matrix**]
+   - [**Clustered Matrix**](#)
 
    <hr>
 
@@ -69,17 +69,17 @@ Power iteration is a very simple algorithm, but it may **converge slowly**. The 
 The power iteration algorithm starts with a vector, which may be an approximation to the dominant eigenvector or a random vector. The method is described by the recurrence relation. <br>
 
 $$
-b_{k+1} =  \frac{Ab_k}{\parallel Ab_k  \parallel}
+b_{k+1} = \frac{Ab_k}{\parallel Ab_k  \parallel}
 $$
 
 So, at every iteration, the vector b_k is multiplied by the matrix **A** and normalized. <br>
 
 If we assume A has an eigenvalue that is strictly greater in magnitude than its other eigenvalues and the starting vector b_0 has a nonzero component in the direction of an eigenvector associated with the dominant eigenvalue, then a subsequence b_k converges to an eigenvector associated with the dominant eigenvalue. <br>
 
-Without the two assumptions above, the sequence b_k does not necessarily converge. In this sequence:
+Without the two assumptions above, the sequence b_k does not necessarily converge. In this sequence: <br>
 
 $$
-b_{k} =  e^{i \phi k}v_1 + r_k
+b_{k} = e^{i \phi k}v_1 + r_k
 $$.
 
 where v_1 is an eigenvector associated with the dominant eigenvalue, and ||r^{k}|| -> 0. The presence of the term e^{i \phi k} implies that b^k does not converge unless e^{i \phi k}=1. Under the two assumptions listed above, the sequence \mu_k defined by <br>
@@ -90,6 +90,8 @@ $$
 \mu k=\frac{b*k^{*}Ab*k}{b_k^{*}b_k}
 
 $$
+
+<br>
 
 **converges to the dominant eigenvalue** (with Rayleigh quotient).
 
@@ -136,4 +138,6 @@ this is the output of the matrix h (it is upper Hessenberg.)
 In this case the gif shows how the eigenvalues of the matrix A and H will be superimposed, you can see that the first eigenvalue is exactly the same.
 
 ![EigenValue](/arnoldi_method/eigen_approx.gif)
+
+#### **Cluster Matrix**
 $$
