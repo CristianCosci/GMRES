@@ -3,16 +3,32 @@
 ## **Index**
 
 1. [**Introduction**](#introduction)
+
    - [**Krylov Subspace**](#krylov-subspace)
-   - [**Arnoldi Iteration**](#arnoldi-iteration)
-2. [**Power iteration**](#power-iteration)
-   - [**The method**] (#method)
+
+2. [**Arnoldi Iteration**](#arnoldi-iteration)
+
+   - [**Finding eigenvalues with the Arnoldi iteration**](#finding-eigenvalues-with-the-arnoldi-iteration)
+
+3. [**Power iteration**](#power-iteration)
+
+   - [**The method**](#method)
+
+4. [**Results**](#results)
+
+   - [**Non-clustered Matrix**]
+
+   - [**Clustered Matrix**]
+
    <hr>
 
 ## **Introduction**
 
-In mathematics, the **generalized minimal residual method (GMRES)** is an iterative method for the numerical solution of an **indefinite non-symmetric** system of linear equations. <br>
-The method approximates the solution by the vector in a [**Krylov subspace**](#krylov-subspace) with minimal residual. The **Arnoldi iteration** is used to find this vector.
+In numerical linear algebra, the Arnoldi iteration is an eigenvalue algorithm and an important example of an iterative method. Arnoldi finds an approximation to the eigenvalues and eigenvectors of general (possibly non-Hermitian) matrices by constructing an orthonormal basis of the Krylov subspace, which makes it particularly useful when dealing with large sparse matrices. <br>
+
+The Arnoldi method belongs to a class of linear algebra algorithms that give a partial result after a small number of iterations, in contrast to so-called direct methods which must complete to give any useful results (see for example, Householder transformation). The partial result in this case being the first few vectors of the basis the algorithm is building. <br>
+
+When applied to Hermitian matrices it reduces to the Lanczos algorithm. The Arnoldi iteration was invented by W. E. Arnoldi in 1951.
 
 #### **Krylov Subspace**
 
@@ -24,18 +40,92 @@ $$
 
 Modern iterative methods such as **Arnoldi iteration** can be used for finding one (or a few) eigenvalues of large **sparse matrices** or solving large systems of linear equations. They try to avoid matrix-matrix operations, but rather multiply vectors by the matrix and work with the resulting vectors. Starting with a vector ${\displaystyle b}$, one computes ${\displaystyle Ab}$, then one multiplies that vector by ${\displaystyle A}$ to find ${\displaystyle A^{2}b}$ and so on. All algorithms that work this way are referred to as Krylov subspace methods; they are among the most successful methods currently available in numerical linear algebra.
 
-#### **Arnoldi Iteration**
+<hr>
+
+## **Arnoldi Iteration**
 
 In numerical linear algebra, the **Arnoldi iteration** is an eigenvalue algorithm and an important example of an iterative method. Arnoldi finds an approximation to the eigenvalues and eigenvectors of general (possibly non-Hermitian) matrices by constructing an orthonormal basis of the Krylov subspace, which makes it particularly useful when dealing with large sparse matrices.
 
 The Arnoldi method belongs to a class of linear algebra algorithms that give a partial result after a small number of iterations, in contrast to so-called direct methods which must complete to give any useful results (see for example, Householder transformation). The partial result in this case being the first few vectors of the basis the algorithm is building.
 
-#### **Power Iteration**
+#### Finding eigenvalues with the Arnoldi iteration
 
-The power iteration algorithm starts with a vector,
+The idea of the Arnoldi iteration as an eigenvalue algorithm is to compute the eigenvalues in the Krylov subspace. The eigenvalues of $$H_n$$ are called the **Ritz eigenvalues**. Since $$H_n$$ is a Hessenberg matrix of modest size, its eigenvalues can be computed efficiently, for instance with the QR algorithm, or somewhat related, Francis's algorithm. Also Francis's algorithm itself can be considered to be related to power iterations, operating on nested Krylov subspace. In fact, the most basic form of Francis's algorithm appears to be to choose b to be equal to Ae1, and extending n to the full dimension of A. Improved versions include one or more shifts, and higher powers of A may be applied in a single steps. <br>
+
+It is often observed in practice that some of the **Ritz eigenvalues** converge to eigenvalues of **A**. Since Hn is n-by-n, it has at most n eigenvalues, and not all eigenvalues of A can be approximated. Typically, the Ritz eigenvalues converge to the largest eigenvalues of A. To get the smallest eigenvalues of A, the inverse (operation) of A should be used instead. This can be related to the characterization of $$H_n$$ as the matrix whose characteristic polynomial minimizes $$\parallel p(A) \parallel q_1||$$ in the following way. A good way to get $$p(A)$$ small is to choose the polynomial p such that p(x) is small whenever x is an eigenvalue of A. Hence, the zeros of p (and thus the Ritz eigenvalues) will be close to the eigenvalues of A.
+
+However, the details are not fully understood yet. This is in contrast to the case where A is Hermitian. In that situation, the Arnoldi iteration becomes the Lanczos iteration, for which the theory is more complete.
+
+<hr>
+
+## **Power Iteration**
+
+In mathematics, power iteration (also known as the power method) is an **eigenvalue algorithm**: given a diagonalizable matrix **A**, the algorithm will produce a number $$\lambda$$ , which is the greatest (in absolute value) eigenvalue of **A**, and a nonzero vector **v**, which is a corresponding eigenvector of $$\lambda$$ , that is, Av=$$\lambda$$ v}. The algorithm is also known as the Von Mises iteration. <br>
+
+Power iteration is a very simple algorithm, but it may **converge slowly**. The most time-consuming operation of the algorithm is the multiplication of matrix **A** by a vector, so it is effective for a very large sparse matrix with appropriate implementation.
+
+#### **Method**
+
+The power iteration algorithm starts with a vector, which may be an approximation to the dominant eigenvector or a random vector. The method is described by the recurrence relation. <br>
 
 $$
-b_{k+1} =  \frac{Ab_k}{\parallel Ab_k  \parallel}   .
+b_{k+1} =  \frac{Ab_k}{\parallel Ab_k  \parallel}
 $$
 
-which may be an approximation to the dominant eigenvector or a random vector. The method is described by the recurrence relation
+So, at every iteration, the vector $$b_{k}$$ is multiplied by the matrix **A** and normalized. <br>
+
+If we assume A has an eigenvalue that is strictly greater in magnitude than its other eigenvalues and the starting vector $$b_{0}$$ has a nonzero component in the direction of an eigenvector associated with the dominant eigenvalue, then a subsequence $$b_{k}$$ converges to an eigenvector associated with the dominant eigenvalue. <br>
+
+Without the two assumptions above, the sequence $$b_{k}$$ does not necessarily converge. In this sequence:
+
+$$b_{k} =  e^{i \phi k}v_1 + r_k$$.
+
+where $$v_{1}$$ is an eigenvector associated with the dominant eigenvalue, and $$ \parallel r*{k} \parallel \rightarrow 0$$. The presence of the term $$e^{i \phi k}$$ implies that $$b*{k}$$ does not converge unless $$e^{i \phi k}=1$$. Under the two assumptions listed above, the sequence $$\mu _{k}$$ defined by <br>
+
+$$\mu k=\frac{b_k^{*}Ab_k}{b_k^{*}b_k}$$
+
+**converges to the dominant eigenvalue** (with Rayleigh quotient).
+
+<hr>
+
+## **Results**
+
+The reported results can be tested directly on the code because the machine on which they are run, does not have enormous computational power and therefore tests with larger matrices cannot be implemented. <br>
+
+Maximum size allocable on the machine:
+
+- Dimensions of matrix A:
+
+  - 3000
+
+- DImensions of vector b:
+
+  - 3000
+
+- Arnoldi Iterarion:
+
+  - 100
+
+- Tollerance Arnoldi:
+
+  - 1e-12
+
+#### **Non-Clustered Matrix**
+
+<br>
+
+This is the output of the matrix Q (orthonormal basis of the Krylov subspace.)
+
+![Matrix Q](../GMRES_python/arnoldi_method/img/q_matrix_noCluster.png)
+
+<br>
+
+this is the output of the matrix h (it is upper Hessenberg.)
+
+![Matrix H](../GMRES_python/arnoldi_method/img/matrix_h_noCluster.png)
+
+<hr>
+
+In this case the gif shows how the eigenvalues of the matrix A and H will be superimposed, you can see that the first eigenvalue is exactly the same.
+
+![EigenValue](../GMRES_python/arnoldi_method/eigen_approx.gif)
