@@ -7,18 +7,20 @@
    - [**Krylov Subspace**](#krylov-subspace)
 
 2. [**Arnoldi Iteration**](#arnoldi-iteration)
-
    - [**Finding eigenvalues with the Arnoldi iteration**](#finding-eigenvalues-with-the-arnoldi-iteration)
-
 3. [**Power iteration**](#power-iteration)
 
    - [**The method**](#method)
 
 4. [**Results**](#results)
 
-   - [**Non-clustered Matrix**](#non-clustered-matrix)
+   - [**Arnoldi**](#arnoldi)
 
-   - [**Clustered Matrix**](#)
+     - [**Non-clustered Matrix**](#non-clustered-matrix)
+     - [**Clustered Matrix**](#non-clustered-matrix)
+
+   - [**Power Method**](#method-of-power)
+     - [Comparison of eigenvalues found](#comparison-of-eigenvalues-found)
 
    <hr>
 
@@ -80,15 +82,12 @@ Without the two assumptions above, the sequence b_k does not necessarily converg
 
 $$
 b_{k} = e^{i \phi k}v_1 + r_k
-$$.
+$$
 
 where v_1 is an eigenvector associated with the dominant eigenvalue, and ||r^{k}|| -> 0. The presence of the term e^{i \phi k} implies that b^k does not converge unless e^{i \phi k}=1. Under the two assumptions listed above, the sequence \mu_k defined by <br>
 
-
 $$
-
-\mu k=\frac{b*k^{*}Ab*k}{b_k^{*}b_k}
-
+\mu k=\frac{b*k^{*Ab\*k}}{b_k^{b_k}}
 $$
 
 <br>
@@ -98,6 +97,10 @@ $$
 <hr>
 
 ## **Results**
+
+<br>
+
+### Arnoldi
 
 The reported results can be tested directly on the code because the machine on which they are run, does not have enormous computational power and therefore tests with larger matrices cannot be implemented. <br>
 
@@ -139,5 +142,50 @@ In this case the gif shows how the eigenvalues of the matrix A and H will be sup
 
 ![EigenValue](/arnoldi_method/eigen_approx.gif)
 
+<hr>
+
 #### **Cluster Matrix**
-$$
+
+<br>
+
+This is the output of the matrix Q (orthonormal basis of the Krylov subspace.)
+
+![Matrix Q](/arnoldi_method/img/matrix_Q_cluster.png)
+
+<br>
+
+this is the output of the matrix h (it is upper Hessenberg.)
+
+![Matrix H](/arnoldi_method/img/matrix_h_cluster.png)
+
+<hr>
+
+In this case the gif shows how the eigenvalues of the matrix A and H will be superimposed, you can see that the first eigenvalue is exactly the same.
+
+![EigenValue](/arnoldi_method/eigen_approx_cluster.gif)
+
+<hr>
+
+<br>
+
+### **Method of Power**
+
+The method of powers is able to find the largest eigenvalue of matrix A, going to minimize the error at each iteration.
+
+<br>
+
+The graph shows its execution:
+
+<br>
+
+![Error](/arnoldi_method/img/output.png)
+
+#### Comparison of eigenvalues found
+
+In the last graph, however, we go on to show how all 3 methods are very effective in finding the eigenvalues of matrix A. In this case the matrix A This matrix has **nicely clustered eigenvalues** which lie roughly in the unit disk.
+
+If the matrix A don't have nicely clustered eigenvalues, Arnoldi's method might approximate the value of the largest eigenvalue slightly worse
+
+<br>
+
+![Difference](/arnoldi_method/img/eigen_difference.png)
