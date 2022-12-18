@@ -69,10 +69,7 @@ Power iteration is a very simple algorithm, but it may **converge slowly**. The 
 The power iteration algorithm starts with a vector, which may be an approximation to the dominant eigenvector or a random vector. The method is described by the recurrence relation. <br>
 
 $$
-
 b_{k+1} =  \frac{Ab_k}{\parallel Ab_k  \parallel}
-
-
 $$
 
 So, at every iteration, the vector b_k is multiplied by the matrix **A** and normalized. <br>
@@ -82,9 +79,7 @@ If we assume A has an eigenvalue that is strictly greater in magnitude than its 
 Without the two assumptions above, the sequence b_k does not necessarily converge. In this sequence:
 
 $$
-
 b_{k} =  e^{i \phi k}v_1 + r_k
-
 $$.
 
 where v_1 is an eigenvector associated with the dominant eigenvalue, and ||r^{k}|| -> 0. The presence of the term e^{i \phi k} implies that b^k does not converge unless e^{i \phi k}=1. Under the two assumptions listed above, the sequence \mu_k defined by <br>
