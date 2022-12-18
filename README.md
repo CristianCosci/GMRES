@@ -5,8 +5,8 @@
 1. [**Introduction**](#introduction)
    - [**Krylov Subspace**](#krylov-subspace)
    - [**Arnoldi Iteration**](#arnoldi-iteration)
-2. [**Power iteration**][#power-iteration]
-   - [**The method**]
+2. [**Power iteration**](#power-iteration)
+   - [**The method**] (#method)
    <hr>
 
 ## **Introduction**
@@ -35,7 +35,6 @@ The Arnoldi method belongs to a class of linear algebra algorithms that give a p
 The power iteration algorithm starts with a vector,
 
 $$
-r
 b_{k+1} =  \frac{Ab_k}{\parallel Ab_k  \parallel}   .
 $$
 
