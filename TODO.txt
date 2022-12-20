@@ -1,0 +1,4 @@
+- Finire readme 
+- Ripulire un po i notebook e organizzare repo foto
+- Guida di installazione
+- Caricare presenteazione

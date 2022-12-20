@@ -183,4 +183,4 @@ This issue is addressed by using `GMRES(k)`, or **GMRES with restarts**. When $k
 ### **References**
 - [Wikipedia](https://en.wikipedia.org/wiki/Generalized_minimal_residual_method)
 - GMRES first paper: [Yousef Saad and Martin H. Schultz](https://doi.org/10.1137/0907058)
-- [GMRES lab](https://acme.byu.edu/0000017a-1bb8-db63-a97e-7bfa0bde0000/krylov2-pdf)s
+- [GMRES labs](https://acme.byu.edu/0000017a-1bb8-db63-a97e-7bfa0bde0000/krylov2-pdf)
