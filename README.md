@@ -179,12 +179,32 @@ The file proceed with the `GMRES` standard implementation and the `GMRES with Re
 
 <hr>
 
-## **Installation and virtual environment preparation**
-
+## **Installation Guide**
+To prepare the system to run the project it is necessary something that is able to execute a Jupyter Notebook with all dependacies and requirements. <br> You can install it by yourself but, to make this work easier, we propose a docker container with everything you need. To install it you have to move in `docker_container/` :open_file_folder: folder and run the following command:
+```shell
+docker compose up
+```
+Now you have a system able to execute all the code :orangutan:.
 
 ### **Execution Guide**
+To start the docker you have to run
+```shell
+docker start -a docker_container-octave-1
+```
+To run the notebook you have to open the jupyter web page following the link that terminal return to you after starting the specific docker container, for example:
+```shell
+http://127.0.0.1:8888/lab?token=c8c09f0b3ce7078426536c1152713b850a24363715eca933
+```
+Now move to the notebook that you want to execute and open it (from web page). You also have to choose the correct jupyter kernel:
+- for the GMRES algorithm you have to choose the `Octave Kernel`, 
+- for the Arnoldi Iteration the `python kernel`
 
+Now everything is done.
 
+To stop the docker container you have to run:
+```shell
+docker stop docker_container-octave-1
+```
 
 <hr>
 
