@@ -9,12 +9,11 @@
    - [Method Description](#method-description)
    - [The least squares problem](#the-least-squares-problem)
    - [Convergence](#convergence)
-   - [GMRES with Restarting](#gmres-with-restarting)
-3. [Implementation](#implementation-info-and-comparison-with-other-methods)
-4. [Results](#results)
-5. [Installation and virtual environment preparation](#installation-and-virtual-environment-preparation)
-6. [Execution Guide](#execution-guide)
-7. [References](#references)
+   - [GMRES with Restarting](#gmres-with-restart)
+3. [Implementation](#implementation)
+4. [Installation Guide](#installation-guide)
+5. [Execution Guide](#execution-guide)
+6. [References](#references)
 
 <hr>
 
