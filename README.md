@@ -211,3 +211,12 @@ docker stop docker_container-octave-1
 - [Wikipedia](https://en.wikipedia.org/wiki/Generalized_minimal_residual_method)
 - GMRES first paper: [Yousef Saad and Martin H. Schultz](https://doi.org/10.1137/0907058)
 - [GMRES labs](https://acme.byu.edu/0000017a-1bb8-db63-a97e-7bfa0bde0000/krylov2-pdf)
+
+
+<hr>
+
+#### ***Authors***
+
+| ![cosci](https://avatars.githubusercontent.com/u/44636000?s=421&v=4) | ![vescera](https://avatars.githubusercontent.com/u/10250769?s=421&v=4)| ![fagiolo](https://avatars.githubusercontent.com/u/44865237?v=4)
+| - | - | - |
+| [Cristian Cosci](https://github.com/CristianCosci) :chicken: | [Nicolò Vescera](https://github.com/ncvescera) 🦧 | [Fabrizio Fagiolo](https://github.com/F-a-b-r-i-z-i-o) :bug:
